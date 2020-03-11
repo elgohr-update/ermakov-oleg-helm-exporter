@@ -5,7 +5,6 @@ on:
     branches: [ master ]
 
 jobs:
-  # This workflow contains a single job called "build"
   publish:
     if: startsWith(github.event.ref, 'refs/tags')
     runs-on: ubuntu-latest
