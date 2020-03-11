@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  # This workflow contains a single job called "build"
+  publish:
+    if: startsWith(github.event.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+        
+    - name: Create Github Release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: ermakov-oleg/helm-exporter/helm-exporter
+        registry: docker.pkg.github.com
+        username: ${{ github.actor }}
+        dockerfile: Dockerfile
+        tag_names: true
