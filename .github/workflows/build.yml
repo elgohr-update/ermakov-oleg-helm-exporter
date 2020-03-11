@@ -1,7 +1,9 @@
 name: build
 
 on:
-  create
+  push:
+    branches:
+    - master
 
 jobs:
   publish:
