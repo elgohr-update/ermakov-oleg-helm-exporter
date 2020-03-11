@@ -44,6 +44,17 @@ var (
 		"updated",
 		"namespace",
 	})
+	updateTime = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "helm_chart_update_time",
+		Help: "Last time when helm release was updated",
+	}, []string{
+		"chart",
+		"release",
+		"version",
+		"appVersion",
+		"status",
+		"namespace",
+	})
 
 	namespaces = flag.String("namespaces", "", "namespaces to monitor.  Defaults to all")
 
@@ -66,6 +77,7 @@ func runStats() {
 	stats.Reset()
 	for _, client := range clients.Items() {
 		list := action.NewList(client.(*action.Configuration))
+		list.StateMask = action.ListAll
 		items, err := list.Run()
 		if err != nil {
 			log.Warnf("got error while listing %v", err)
@@ -77,10 +89,13 @@ func runStats() {
 			releaseName := item.Name
 			version := item.Chart.Metadata.Version
 			appVersion := item.Chart.AppVersion()
-			updated := strconv.FormatInt((item.Info.LastDeployed.Unix() * 1000), 10)
+			updateTimestamp := item.Info.LastDeployed.Unix()
+			updated := strconv.FormatInt(updateTimestamp*1000, 10)
 			namespace := item.Namespace
-			status := statusCodeMap[item.Info.Status.String()]
+			statusName := item.Info.Status.String()
+			status := statusCodeMap[statusName]
 			stats.WithLabelValues(chart, releaseName, version, appVersion, updated, namespace).Set(status)
+			updateTime.WithLabelValues(chart, releaseName, version, appVersion, statusName, namespace).Set(float64(updateTimestamp))
 		}
 	}
 }
