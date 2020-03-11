@@ -8,7 +8,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v1
 
@@ -23,11 +22,10 @@ jobs:
 
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         name: ermakov-oleg/helm-exporter/helm-exporter
         registry: docker.pkg.github.com
         username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         dockerfile: Dockerfile
         tag_names: true
