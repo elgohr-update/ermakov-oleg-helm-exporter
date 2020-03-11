@@ -6,28 +6,32 @@ on:
 
 jobs:
   publish:
-    if: startsWith(github.ref, 'refs/tags/')
+#     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v1
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
         
-    - name: Create Github Release
-      id: create_release
-      uses: actions/create-release@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+#     - name: Create Github Release
+#       id: create_release
+#       uses: actions/create-release@v1.0.0
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       with:
+#         tag_name: ${{ github.ref }}
+#         release_name: ${{ github.ref }}
 
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        name: ermakov-oleg/helm-exporter/helm-exporter
-        registry: docker.pkg.github.com
-        username: ${{ github.actor }}
-        dockerfile: Dockerfile
-        tag_names: true
+#     - name: Publish to Registry
+#       uses: elgohr/Publish-Docker-Github-Action@master
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       with:
+#         name: ermakov-oleg/helm-exporter/helm-exporter
+#         registry: docker.pkg.github.com
+#         username: ${{ github.actor }}
+#         dockerfile: Dockerfile
+#         tag_names: true
