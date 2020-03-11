@@ -34,7 +34,6 @@ The metric value is the helm status code.  These status codes indexes do not map
 # Prior Art
 * https://github.com/Kubedex/exporter
 
-
 # Todo
 * /healthz endpoint method
 
