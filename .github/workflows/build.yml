@@ -21,7 +21,7 @@ jobs:
         release_name: ${{ github.ref }}
 
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: ermakovolegs/helm-exporter
         username: ${{ secrets.DOCKER_USERNAME }}
